@@ -119,7 +119,7 @@ class ClaudeCliWrapperTests(unittest.TestCase):
                 "--question",
                 "Review this.",
                 "--model",
-                "fable",
+                "claude-opus-5-5",
                 "--effort",
                 "xhigh",
                 "--debug-file",
@@ -130,7 +130,7 @@ class ClaudeCliWrapperTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             argv = json.loads(record.read_text(encoding="utf-8"))["argv"]
-            self.assertEqual(argv[argv.index("--model"):argv.index("--model") + 2], ["--model", "fable"])
+            self.assertEqual(argv[argv.index("--model"):argv.index("--model") + 2], ["--model", "claude-opus-5-5"])
             self.assertEqual(argv[argv.index("--effort"):argv.index("--effort") + 2], ["--effort", "xhigh"])
             self.assertEqual(argv[argv.index("--debug-file"):argv.index("--debug-file") + 2], ["--debug-file", "claude-debug.log"])
             self.assertEqual(argv[argv.index("--permission-mode"):argv.index("--permission-mode") + 2], ["--permission-mode", "acceptEdits"])
@@ -246,7 +246,7 @@ class ClaudeCliWrapperTests(unittest.TestCase):
                     "--question",
                     "Review this.",
                     "--model",
-                    "fable",
+                    "claude-opus-5-5",
                     "--effort",
                     effort,
                     "--dry-run",

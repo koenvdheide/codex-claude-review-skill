@@ -56,7 +56,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 ```
 
-Build the prompt bundle yourself: include the question, instructions, exact evidence, the simplicity bar from [Prompt Shape](#prompt-shape) and the [architectural ownership checklist](references/architectural-ownership.md) for every change-recommending review, and a request for a final verdict or concrete error. Do not reduce evidence fidelity just to fit the wrapper. The temp-file pipe removes wrapper prompt-composition variables, but it is not a guaranteed fix for backend/model routing errors such as `role 'system' is not supported on this model`. If the user asks for Fable on a direct temp-file pipe, pass Claude Code's native flags, for example `--model fable --effort xhigh`. If a backend/model error appears, preserve the output file, retry once without any explicit `--model` or `--effort` if they were used, then split or narrow the bundle before changing models.
+Build the prompt bundle yourself: include the question, instructions, exact evidence, the simplicity bar from [Prompt Shape](#prompt-shape) and the [architectural ownership checklist](references/architectural-ownership.md) for every change-recommending review, and a request for a final verdict or concrete error. Do not reduce evidence fidelity just to fit the wrapper. The temp-file pipe removes wrapper prompt-composition variables, but it is not a guaranteed fix for backend/model routing errors such as `role 'system' is not supported on this model`. If the user asks for Opus 5.5 on a direct temp-file pipe, pass Claude Code's native flags, for example `--model claude-opus-5-5 --effort xhigh`. If a backend/model error appears, preserve the output file, retry once without any explicit `--model` or `--effort` if they were used, then split or narrow the bundle before changing models.
 
 ## Wrapper
 
@@ -83,7 +83,7 @@ python "$SkillDir\scripts\run_claude_cli.py" `
   --out "C:\path\to\claude-diff-review.txt"
 ```
 
-Use Fable at `xhigh` effort when the user asks for that model:
+Use Opus 5.5 at `xhigh` effort when the user asks for that model:
 
 ```powershell
 $SkillDir = Join-Path $env:USERPROFILE ".codex\skills\claude"
@@ -91,9 +91,9 @@ python "$SkillDir\scripts\run_claude_cli.py" `
   --mode diff-review `
   --repo "C:\path\to\repo" `
   --prompt-file ".codex-review-bundle.md" `
-  --model fable `
+  --model claude-opus-5-5 `
   --effort xhigh `
-  --out "C:\path\to\claude-fable-review.txt"
+  --out "C:\path\to\claude-opus-5-5-review.txt"
 ```
 
 Run one round in a convergence loop:
@@ -123,7 +123,7 @@ python "$SkillDir\scripts\run_claude_cli.py" `
   --out "C:\path\to\ultrareview.txt"
 ```
 
-Use `--dry-run` before the first run in an unfamiliar environment. For normal analysis modes, including `convergence`, the wrapper uses `claude --print --no-session-persistence --output-format text`, defaults to `--permission-mode plan`, and passes the review prompt over stdin. It does not set `--model`, `--effort`, or a wrapper process timeout unless you explicitly pass those flags. Leave them omitted unless the user asks for a model/effort or explicitly authorizes a finite `--timeout-seconds`. When the user asks for the Fable model at high review effort, pass `--model fable --effort xhigh`. Do not use `max` effort by default. Add `--debug-file <path>` when reproducing CLI/API routing failures.
+Use `--dry-run` before the first run in an unfamiliar environment. For normal analysis modes, including `convergence`, the wrapper uses `claude --print --no-session-persistence --output-format text`, defaults to `--permission-mode plan`, and passes the review prompt over stdin. It does not set `--model`, `--effort`, or a wrapper process timeout unless you explicitly pass those flags. Leave them omitted unless the user asks for a model/effort or explicitly authorizes a finite `--timeout-seconds`. When the user asks for the Opus 5.5 model at high review effort, pass `--model claude-opus-5-5 --effort xhigh`. Do not use `max` effort by default. Add `--debug-file <path>` when reproducing CLI/API routing failures.
 
 For `ultrareview`, `--timeout-minutes` is required because the underlying Claude command always has a finite timeout; obtain explicit user authorization for the limit. The wrapper passes that value to Claude and does not add a second wrapper process timeout. Omit `--target` to review the current branch. Add `--json` to return Claude's raw `bugs.json` payload. Analysis-only flags (`--question`, `--context`, `--prompt-file`, `--instructions`, `--convergence-review-mode`, `--original-brief`, `--prior-findings`, `--round`, `--model`, `--effort`, `--debug-file`, `--timeout-seconds`, and non-default `--permission-mode`) are ignored in `ultrareview` mode; the wrapper prints a warning when they are supplied.
 
