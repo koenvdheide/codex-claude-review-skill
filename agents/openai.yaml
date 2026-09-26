@@ -1,0 +1,4 @@
+interface:
+  display_name: "Claude CLI"
+  short_description: "Call Claude Code CLI as an external analysis partner."
+  default_prompt: "Use Claude CLI to review this artifact or decision, prefer the smallest sufficient change, and require concrete justification for added machinery; use fable/xhigh when the user requests Fable at high effort."
